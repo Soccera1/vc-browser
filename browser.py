@@ -101,9 +101,9 @@ class Browser:
             ('underline', 'underline', ''),
             ('focus', 'white', 'black', 'standout'),
         ]
-        loop = urwid.MainLoop(self.main_widget, palette, unhandled_input=self.handle_input)
-        self.main_widget.set_focus('header') # Set focus to the header
-        loop.run()
+        self.loop = urwid.MainLoop(self.main_widget, palette, unhandled_input=self.handle_input)
+        self.main_widget.set_focus('header')
+        self.loop.run()
 
     def handle_input(self, key):
         if key in ('q', 'Q'):
