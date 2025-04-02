@@ -47,19 +47,16 @@ class Browser:
         soup = BeautifulSoup(html, 'html.parser')
         content = []
 
-        def add_element(element, is_link=False, link_url=None):
+        def add_element(element):
             if element:
-                if is_link and link_url:
-                    content.append(Link(element.strip(), link_url, self.follow_link))
-                else:
-                    content.append(urwid.Text(element.strip()))
+                content.append(urwid.Text(element.strip()))
 
         def extract_text_with_links(tag):
             parts = []
             for child in tag.contents:
                 if child.name == 'a' and child.has_attr('href'):
                     href = urljoin(base_url, child['href'])
-                    parts.append(('link', child.get_text()))
+                    parts.append(('link', child.get_text(), href)) # Store text and href
                 elif isinstance(child, str):
                     parts.append(('text', child))
                 elif child.name in ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'span']:
@@ -73,16 +70,19 @@ class Browser:
         for tag in soup.find_all('p'):
             parts = extract_text_with_links(tag)
             current_line = []
-            for type, text in parts:
+            for type, text, *rest in parts:
                 if type == 'link':
-                    current_line.append(Link(text, urljoin(base_url, [part[1] for part in parts if part[0] == 'link'][parts.index((type, text))]), self.follow_link))
+                    href = rest[0]
+                    current_line.append(Link(text, href, self.follow_link))
                 elif type == 'text':
                     current_line.append(urwid.Text(text))
             if current_line:
                 content.append(urwid.Pile(current_line))
+
+        # Handle links outside of paragraphs (e.g., in lists, divs) more directly
         for link_tag in soup.find_all('a', href=True):
             href = urljoin(base_url, link_tag['href'])
-            add_element(link_tag.get_text(), is_link=True, link_url=href)
+            content.append(Link(link_tag.get_text().strip(), href, self.follow_link))
 
         if not content:
             content.append(urwid.Text("No content found."))
