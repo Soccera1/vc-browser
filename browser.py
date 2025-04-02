@@ -33,7 +33,7 @@ class Browser:
         url = self.url_edit.edit_text
         self.current_url = url
         self.content_list[:] = [urwid.Text("Loading...")]
-        loop.draw_screen()
+        self.loop.draw_screen() # Changed 'loop' to 'self.loop'
         try:
             response = requests.get(url)
             response.raise_for_status()
