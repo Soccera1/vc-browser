@@ -20,7 +20,7 @@ class Link(urwid.Button):
 
 class Browser:
     def __init__(self):
-        self.url_edit = urwid.Edit("URL: ", edit_text="https://example.com")
+        self.url_edit = urwid.Edit("URL: ", edit_text="") # Removed default URL
         self.load_button = urwid.Button("Load")
         urwid.connect_signal(self.load_button, 'click', self.load_url)
         self.header = urwid.Pile([self.url_edit, self.load_button])
@@ -28,6 +28,7 @@ class Browser:
         self.list_box = urwid.ListBox(self.content_list)
         self.main_widget = urwid.Frame(header=self.header, body=self.list_box)
         self.current_url = None
+
 
     def load_url(self, button):
         url = self.url_edit.edit_text
