@@ -29,7 +29,6 @@ class Browser:
         self.main_widget = urwid.Frame(header=self.header, body=self.list_box)
         self.current_url = None
 
-
     def load_url(self, button):
         url = self.url_edit.edit_text
         self.current_url = url
