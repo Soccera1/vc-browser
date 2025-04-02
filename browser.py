@@ -102,9 +102,7 @@ class Browser:
             ('focus', 'white', 'black', 'standout'),
         ]
         loop = urwid.MainLoop(self.main_widget, palette, unhandled_input=self.handle_input)
-        # Try setting initial focus to the url_edit
-        loop.set_focus(self.main_widget)
-        loop.set_focus_path(['header', 0]) # Assuming url_edit is the first element in the header
+        self.main_widget.set_focus('header') # Set focus to the header
         loop.run()
 
     def handle_input(self, key):
